@@ -131,33 +131,47 @@ export function Repos() {
   return (
     <div className="container max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">GitHub Repository Browser</h1>
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-            GitHub Username
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-            placeholder="GitHub Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+      <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 mb-4">
+        <div className="flex flex-col gap-8 mb-6">
+          <div className="flex flex-col gap-7 relative text-white">
+            <input
+              className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] bg-transparent 
+              shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
+              focus:border-2 focus:border-transparent
+              focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
+              valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
+              peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
+              peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+              Username
+            </label>
+          </div>
+
+          <div className="flex flex-col gap-7 relative text-white">
+            <input
+              className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] bg-transparent 
+              shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
+              focus:border-2 focus:border-transparent
+              focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
+              valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+              type="text"
+              value={repoName}
+              onChange={(e) => setRepoName(e.target.value)}
+              required
+            />
+            <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
+              peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
+              peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+              Repo Name
+            </label>
+          </div>
         </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="repoName">
-            Repository Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-            placeholder="Repository Name"
-            value={repoName}
-            onChange={(e) => setRepoName(e.target.value)}
-            required
-          />
-        </div>
+        
         <div className="flex items-center justify-between">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
