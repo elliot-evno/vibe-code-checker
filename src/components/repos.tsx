@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 export function Repos() {
   const [username, setUsername] = useState("");
@@ -8,6 +9,7 @@ export function Repos() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
+  const [evaluation, setEvaluation] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +48,51 @@ export function Repos() {
       setCurrentPath(newPath);
     } else {
       setCurrentPath(path);
+    }
+  };
+
+  const handleEvaluateCodebase = async (files: any[]) => {
+    try {
+      // Filter out directories and files without content
+      const codeFiles = files.filter(file => 
+        file.type === 'file' && file.content
+      );
+
+      // Create a structured format for evaluation
+      const codebaseContent = codeFiles.map(file => {
+        // Decode base64 content if needed
+        const content = file.content.startsWith('base64:') 
+          ? Buffer.from(file.content.slice(7), 'base64').toString('utf-8')
+          : file.content;
+
+        return `### File: ${file.path}\n` +
+               `#### Metadata:\n` +
+               `- Size: ${file.size} bytes\n` +
+               `\n` +
+               `#### Content:\n` +
+               '```\n' +
+               content +
+               '\n```\n';
+      }).join('\n\n');
+
+      const response = await fetch('/api/generation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          codebase: codebaseContent
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to evaluate codebase');
+      }
+
+      const result = await response.json();
+      setEvaluation(result.response);
+    } catch (err) {
+      setEvaluation(`**Error:** ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
     }
   };
 
@@ -99,15 +146,23 @@ export function Repos() {
       {files.length > 0 && (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Files</h2>
-            {currentPath && (
+            <h2 className="text-xl font-semibold text-black">Files</h2>
+            <div>
+              {currentPath && (
+                <button
+                  className="text-blue-500 hover:text-blue-700 font-bold py-2 px-4 rounded mr-2"
+                  onClick={() => handleNavigate("..")}
+                >
+                  Back
+                </button>
+              )}
               <button
-                className="text-blue-500 hover:text-blue-700 font-bold py-2 px-4 rounded"
-                onClick={() => handleNavigate("..")}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => handleEvaluateCodebase(files)}
               >
-                Back
+                Evaluate Codebase
               </button>
-            )}
+            </div>
           </div>
           <ul className="space-y-2">
             {files.map((file) => (
@@ -119,12 +174,21 @@ export function Repos() {
                 <span className="mr-2">
                   {file.type === "dir" ? "📁" : "📄"}
                 </span>
-                <span className={file.type === "dir" ? "font-bold" : ""}>
+                <span className={file.type === "dir" ? "font-bold text-black" : "text-black"}>
                   {file.name}
                 </span>
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {evaluation && (
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+          <h2 className="text-xl font-semibold mb-4 text-black">Codebase Evaluation</h2>
+          <div className="prose max-w-none">
+            <MarkdownRenderer content={evaluation} />
+          </div>
         </div>
       )}
     </div>

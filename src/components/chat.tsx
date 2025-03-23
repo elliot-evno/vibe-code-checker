@@ -1,5 +1,5 @@
 import React, { useRef, type FormEvent, useState } from "react";
-import { marked } from 'marked';
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 // Enhanced helper function with debugging
 const ensureString = (input: unknown): string => {
@@ -17,20 +17,7 @@ const ensureString = (input: unknown): string => {
   return String(input);
 };
 
-const MarkdownRenderer = ({ content }: { content: string }) => {
-  const html = marked.parse(content);
-  return (
-    <div 
-      dangerouslySetInnerHTML={{ __html: html }}
-      style={{
-        lineHeight: '1.6',
-        fontSize: '1rem',
-        padding: '0 1rem',
-        color: '#fbf0df',
-      }}
-    />
-  );
-};
+
 
 export function APITester() {
   const [markdown, setMarkdown] = useState<string>("");

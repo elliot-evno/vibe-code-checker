@@ -8,13 +8,15 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstru
 
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { codebase } = await req.json();
+    
+    const evaluationPrompt = `Evaluate the following codebase:\n\n${codebase}\n\nProvide your score and evaluation.`;
     
     const result = await model.generateContent({
       contents: [
         {
           role: "user",
-          parts: [{ text: prompt }]
+          parts: [{ text: evaluationPrompt }]
         }
       ]
     });
