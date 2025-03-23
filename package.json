@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@google/generative-ai": "^0.24.0",
+    "@mui/x-charts": "^7.28.0",
     "marked": "^15.0.7",
     "next": "15.2.3",
     "octokit": "^4.1.2",

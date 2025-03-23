@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { 
+  BarChart, 
+  PieChart,
+  LineChart,
+  SparkLineChart 
+} from '@mui/x-charts';
 
 export function Repos() {
   const [username, setUsername] = useState("");
@@ -121,211 +126,189 @@ export function Repos() {
   };
 
   const renderEvaluation = (data: any) => {
-    console.log('Rendering evaluation with data:', data); // Debug log
-
-    // Ensure we have the required data
-    if (!data.scores || !data.metrics) {
-      return <div>Invalid evaluation data format</div>;
-    }
-
-    const scoreData = Object.entries(data.scores)
-      .filter(([key]) => key !== 'overallScore')
-      .map(([key, value]) => ({
-        name: key.replace(/([A-Z])/g, ' $1').trim(),
-        value: Number(value)  // Ensure the value is a number
-      }));
-
-    console.log('Score data for radar chart:', scoreData); // Debug log
-
-    const metricData = [
-      { name: 'Files', value: Number(data.metrics.totalFiles) },
-      { name: 'Lines', value: Number(data.metrics.totalLines) },
-      { name: 'Comment Ratio', value: Number(data.metrics.commentRatio) },
-      { name: 'Complexity', value: Number(data.metrics.complexity) },
-      { name: 'Duplication', value: Number(data.metrics.duplication) }
+    // Prepare data for charts
+    const scoreData = [
+      { name: 'Code Quality', value: data.scores.codeQuality },
+      { name: 'Type Usage', value: data.scores.typeUsage },
+      { name: 'Error Handling', value: data.scores.errorHandling },
+      { name: 'Code Structure', value: data.scores.codeStructure },
+      { name: 'Documentation', value: data.scores.documentation },
+      { name: 'Security', value: data.scores.security },
+      { name: 'Performance', value: data.scores.performance },
     ];
 
-    console.log('Metric data for bar chart:', metricData); // Debug log
-
-    // Prepare complexity distribution data for pie chart
-    const complexityData = Object.entries(data.codeQualityMetrics.complexityDistribution).map(([key, value]) => ({
-      name: key.charAt(0).toUpperCase() + key.slice(1),
-      value: Number(value)
-    }));
-
-    // Prepare vulnerability data for stacked bar chart
-    const vulnerabilityData = [{
-      name: 'Vulnerabilities',
-      Critical: data.securityMetrics.vulnerabilities.critical,
-      High: data.securityMetrics.vulnerabilities.high,
-      Medium: data.securityMetrics.vulnerabilities.medium,
-      Low: data.securityMetrics.vulnerabilities.low
-    }];
-
-    // Colors for different charts
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
-    const SEVERITY_COLORS = {
-      Critical: '#dc3545',
-      High: '#ff4d4d',
-      Medium: '#ffa500',
-      Low: '#4caf50'
-    };
+    const vulnerabilityData = [
+      data.securityMetrics.vulnerabilities.critical,
+      data.securityMetrics.vulnerabilities.high,
+      data.securityMetrics.vulnerabilities.medium,
+      data.securityMetrics.vulnerabilities.low,
+    ];
 
     return (
       <div className="space-y-8">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg text-white mb-6">
+        {/* Overall Score Card */}
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg text-white">
           <h2 className="text-2xl font-bold mb-2">Overall Score</h2>
           <div className="text-4xl font-bold">
             {data.scores.overallScore?.toFixed(1) || 'N/A'}/100
           </div>
         </div>
 
+        {/* Score Overview */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-xl font-semibold mb-6">Score Breakdown</h3>
+          <BarChart
+            xAxis={[{ 
+              scaleType: 'band', 
+              data: scoreData.map(item => item.name) 
+            }]}
+            series={[{
+              data: scoreData.map(item => item.value),
+              color: '#8884d8'
+            }]}
+            height={300}
+            margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+          />
+        </div>
+
+        {/* Code Quality Section */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold mb-6">Code Quality Metrics</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Maintainability and Technical Debt */}
+            {/* Left column */}
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Maintainability Index</h4>
-                <div className="relative pt-1">
-                  <div className="flex mb-2 items-center justify-between">
-                    <div className="text-xl font-semibold">
-                      {data.codeQualityMetrics.maintainabilityIndex}/100
-                    </div>
-                  </div>
-                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
-                    <div 
-                      style={{ width: `${data.codeQualityMetrics.maintainabilityIndex}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                    />
-                  </div>
+                <h4 className="font-medium mb-2">Maintainability</h4>
+                <div className="text-3xl font-bold text-blue-600">
+                  {data.codeQualityMetrics.maintainabilityIndex}/100
                 </div>
+                <div className="text-sm text-gray-500 mt-1">Maintainability Index</div>
               </div>
+
               <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Technical Debt Ratio</h4>
-                <div className="text-xl font-semibold text-orange-500">
+                <h4 className="font-medium mb-2">Technical Debt</h4>
+                <div className="text-3xl font-bold text-orange-500">
                   {data.codeQualityMetrics.technicalDebtRatio}%
                 </div>
+                <div className="text-sm text-gray-500 mt-1">Technical Debt Ratio</div>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium mb-2">Code Smells</h4>
+                <div className="text-3xl font-bold text-red-500">
+                  {data.codeQualityMetrics.codeSmells}
+                </div>
+                <div className="text-sm text-gray-500 mt-1">Total Code Smells</div>
               </div>
             </div>
 
-            {/* Complexity Distribution Pie Chart */}
+            {/* Right column - Complexity Distribution */}
             <div>
               <h4 className="font-medium mb-4">Complexity Distribution</h4>
-              <PieChart width={300} height={200}>
-                <Pie
-                  data={complexityData}
-                  cx={150}
-                  cy={100}
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {complexityData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
+              <PieChart
+                series={[{
+                  data: [
+                    { id: 0, value: data.codeQualityMetrics.complexityDistribution.low, label: 'Low' },
+                    { id: 1, value: data.codeQualityMetrics.complexityDistribution.medium, label: 'Medium' },
+                    { id: 2, value: data.codeQualityMetrics.complexityDistribution.high, label: 'High' },
+                    { id: 3, value: data.codeQualityMetrics.complexityDistribution.veryHigh, label: 'Very High' },
+                  ],
+                  highlightScope: { faded: 'global', highlighted: 'item' },
+                }]}
+                height={200}
+              />
             </div>
           </div>
         </div>
 
+        {/* Security Section */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h3 className="text-xl font-semibold mb-6">Security Analysis</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Vulnerabilities Stacked Bar Chart */}
+            {/* Left column - Vulnerability Chart */}
             <div>
-              <h4 className="font-medium mb-4">Vulnerability Distribution</h4>
-              <BarChart width={300} height={200} data={vulnerabilityData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {Object.keys(SEVERITY_COLORS).map((severity) => (
-                  <Bar 
-                    key={severity}
-                    dataKey={severity}
-                    stackId="a"
-                    fill={SEVERITY_COLORS[severity as keyof typeof SEVERITY_COLORS]}
-                  />
-                ))}
-              </BarChart>
+              <h4 className="font-medium mb-4">Vulnerabilities by Severity</h4>
+              <BarChart
+                xAxis={[{ 
+                  scaleType: 'band', 
+                  data: ['Critical', 'High', 'Medium', 'Low']
+                }]}
+                series={[{
+                  data: vulnerabilityData,
+                  color: ['#dc3545', '#ff4d4d', '#ffa500', '#4caf50'] as any
+                }]}
+                height={200}
+              />
             </div>
 
-            {/* Security Metrics Summary */}
+            {/* Right column - Security Metrics */}
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-medium mb-2">Security Hotspots</h4>
-                <div className="text-xl font-semibold text-red-500">
+                <div className="text-3xl font-bold text-yellow-500">
                   {data.securityMetrics.securityHotspots}
                 </div>
+                <div className="text-sm text-gray-500 mt-1">Areas Needing Review</div>
               </div>
+
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-medium mb-2">Authentication Coverage</h4>
-                <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
-                    <div 
-                      style={{ width: `${data.securityMetrics.authenticationCoverage}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
-                    />
-                  </div>
-                  <div className="text-xl font-semibold">
-                    {data.securityMetrics.authenticationCoverage}%
-                  </div>
+                <div className="text-3xl font-bold text-green-600">
+                  {data.securityMetrics.authenticationCoverage}%
                 </div>
+                <div className="text-sm text-gray-500 mt-1">Auth Coverage</div>
               </div>
+
               <div className="p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-medium mb-2">Secure Code Practices</h4>
-                <div className="text-xl font-semibold text-green-600">
-                  {data.securityMetrics.secureCodePractices}/100
-                </div>
+                <SparkLineChart
+                  data={[data.securityMetrics.secureCodePractices]}
+                  height={60}
+                  showTooltip
+                  showHighlight
+                />
+                <div className="text-sm text-gray-500 mt-1">Score: {data.securityMetrics.secureCodePractices}/100</div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Codebase Overview */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Code Quality Scores</h3>
-          <div className="flex justify-center" style={{ minHeight: '300px' }}>
-            <RadarChart width={500} height={300} data={scoreData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="name" />
-              <PolarRadiusAxis angle={30} domain={[0, 100]} />
-              <Radar 
-                name="Score" 
-                dataKey="value" 
-                stroke="#8884d8" 
-                fill="#8884d8" 
-                fillOpacity={0.6} 
-              />
-              <Tooltip />
-              <Legend />
-            </RadarChart>
+          <h3 className="text-xl font-semibold mb-6">Codebase Metrics</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold">{data.metrics.totalFiles}</div>
+              <div className="text-sm text-gray-500">Total Files</div>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold">{data.metrics.totalLines}</div>
+              <div className="text-sm text-gray-500">Lines of Code</div>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold">{data.metrics.commentRatio}%</div>
+              <div className="text-sm text-gray-500">Comment Ratio</div>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold">{data.metrics.duplication}%</div>
+              <div className="text-sm text-gray-500">Code Duplication</div>
+            </div>
           </div>
         </div>
 
+        {/* Improvement Tips */}
         <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Codebase Metrics</h3>
-          <div className="flex justify-center" style={{ minHeight: '300px' }}>
-            <BarChart width={500} height={300} data={metricData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Raw Data (Debug)</h3>
-          <pre className="bg-gray-100 p-4 rounded overflow-auto">
-            {JSON.stringify(data, null, 2)}
-          </pre>
+          <h3 className="text-xl font-semibold mb-4">Improvement Tips</h3>
+          <ul className="space-y-2">
+            {data.improvementTips.map((tip: string, index: number) => (
+              <li key={index} className="flex items-start p-2 bg-blue-50 rounded">
+                <span className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white mr-3">
+                  {index + 1}
+                </span>
+                <span className="text-gray-700">{tip}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     );
