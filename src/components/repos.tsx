@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { MarkdownRenderer } from './MarkdownRenderer';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 export function Repos() {
   const [username, setUsername] = useState("");
@@ -90,10 +90,113 @@ export function Repos() {
       }
 
       const result = await response.json();
-      setEvaluation(result.response);
+      console.log('Raw API response:', result);
+
+      try {
+        // Clean up the response string by removing markdown code block markers
+        let cleanResponse = result.response;
+        if (typeof cleanResponse === 'string') {
+          // Remove markdown code block markers and any language identifier
+          cleanResponse = cleanResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          const evaluationData = JSON.parse(cleanResponse);
+          
+          console.log('Parsed evaluation data:', evaluationData);
+
+          if (!evaluationData.scores || !evaluationData.metrics) {
+            throw new Error('Invalid evaluation data format');
+          }
+
+          setEvaluation(evaluationData);
+        } else {
+          setEvaluation(result.response);
+        }
+      } catch (err) {
+        console.error('JSON parsing error:', err);
+        setEvaluation(`Error parsing evaluation data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
     } catch (err) {
-      setEvaluation(`**Error:** ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
+      console.error('Evaluation error:', err);
+      setEvaluation(`Error: ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
     }
+  };
+
+  const renderEvaluation = (data: any) => {
+    console.log('Rendering evaluation with data:', data); // Debug log
+
+    // Ensure we have the required data
+    if (!data.scores || !data.metrics) {
+      return <div>Invalid evaluation data format</div>;
+    }
+
+    const scoreData = Object.entries(data.scores)
+      .filter(([key]) => key !== 'overallScore')
+      .map(([key, value]) => ({
+        name: key.replace(/([A-Z])/g, ' $1').trim(),
+        value: Number(value)  // Ensure the value is a number
+      }));
+
+    console.log('Score data for radar chart:', scoreData); // Debug log
+
+    const metricData = [
+      { name: 'Files', value: Number(data.metrics.totalFiles) },
+      { name: 'Lines', value: Number(data.metrics.totalLines) },
+      { name: 'Comment Ratio', value: Number(data.metrics.commentRatio) },
+      { name: 'Complexity', value: Number(data.metrics.complexity) },
+      { name: 'Duplication', value: Number(data.metrics.duplication) }
+    ];
+
+    console.log('Metric data for bar chart:', metricData); // Debug log
+
+    return (
+      <div className="space-y-8">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg text-white mb-6">
+          <h2 className="text-2xl font-bold mb-2">Overall Score</h2>
+          <div className="text-4xl font-bold">
+            {data.scores.overallScore?.toFixed(1) || 'N/A'}/100
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-xl font-semibold mb-4">Code Quality Scores</h3>
+          <div className="flex justify-center" style={{ minHeight: '300px' }}>
+            <RadarChart width={500} height={300} data={scoreData}>
+              <PolarGrid />
+              <PolarAngleAxis dataKey="name" />
+              <PolarRadiusAxis angle={30} domain={[0, 100]} />
+              <Radar 
+                name="Score" 
+                dataKey="value" 
+                stroke="#8884d8" 
+                fill="#8884d8" 
+                fillOpacity={0.6} 
+              />
+              <Tooltip />
+              <Legend />
+            </RadarChart>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-xl font-semibold mb-4">Codebase Metrics</h3>
+          <div className="flex justify-center" style={{ minHeight: '300px' }}>
+            <BarChart width={500} height={300} data={metricData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h3 className="text-xl font-semibold mb-4">Raw Data (Debug)</h3>
+          <pre className="bg-gray-100 p-4 rounded overflow-auto">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -184,11 +287,14 @@ export function Repos() {
       )}
 
       {evaluation && (
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
-          <h2 className="text-xl font-semibold mb-4 text-black">Codebase Evaluation</h2>
-          <div className="prose max-w-none">
-            <MarkdownRenderer content={evaluation} />
-          </div>
+        <div className="text-black bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
+          {typeof evaluation === 'string' ? (
+            <div className="text-black">
+              <pre>{evaluation}</pre>
+            </div>
+          ) : (
+            renderEvaluation(evaluation)
+          )}
         </div>
       )}
     </div>
