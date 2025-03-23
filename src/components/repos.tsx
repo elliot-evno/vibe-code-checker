@@ -176,11 +176,18 @@ export function Repos() {
         
         <div className="flex items-center justify-between">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="h-10 px-6 rounded-lg flex items-center justify-center bg-[#c7c3c0]
+            shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_#ffffff,inset_-2px_-2px_4px_#c7c3c0] 
+            transition-all hover:scale-105 
+            active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000,inset_-2px_-2px_4px_#c7c3c0] 
+            disabled:opacity-50 disabled:hover:scale-100"
             type="submit"
             disabled={isLoading}
+          style={{ cursor: 'pointer' }}
           >
-            {isLoading ? 'Loading...' : 'Browse Repository'}
+            <span className="text-[#5f5f5f] text-sm font-medium transition-all active:scale-95">
+              {isLoading ? 'Loading...' : 'Browse Repository'}
+            </span>
           </button>
         </div>
       </form>
