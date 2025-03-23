@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEvaluation } from '../context/EvaluationContext';
 import { 
   BarChart, 
   PieChart,
@@ -9,69 +9,12 @@ import {
 } from '@mui/x-charts';
 
 export default function Analysis() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const [evaluation, setEvaluation] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Get the evaluation data from URL parameters
-        const encodedData = searchParams.get("data");
-        
-        if (!encodedData) {
-          setError("No analysis data found");
-          setLoading(false);
-          return;
-        }
-        
-        // Decode and parse the data
-        const decodedData = JSON.parse(decodeURIComponent(encodedData));
-        setEvaluation(decodedData);
-      } catch (err) {
-        console.error("Error parsing evaluation data:", err);
-        setError("Failed to load analysis data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [searchParams]);
+  const { evaluationData: evaluation } = useEvaluation();
 
   const handleBack = () => {
     router.back();
   };
-
-  if (loading) {
-    return (
-      <div className="container max-w-6xl mx-auto p-6 flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto mb-4"></div>
-          <p className="text-xl font-semibold">Loading analysis data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container max-w-6xl mx-auto p-6">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg">
-          <h2 className="text-xl font-bold mb-2">Error</h2>
-          <p>{error}</p>
-          <button 
-            onClick={handleBack}
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Back to Repository
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   if (!evaluation) {
     return (

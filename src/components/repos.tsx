@@ -1,12 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  BarChart, 
-  PieChart,
-  LineChart,
-  SparkLineChart 
-} from '@mui/x-charts';
+
+import { useEvaluation } from '../context/EvaluationContext';
 
 export function Repos() {
   const router = useRouter();
@@ -17,6 +13,7 @@ export function Repos() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { setEvaluationData } = useEvaluation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,10 +98,8 @@ export function Repos() {
       console.log('Raw API response:', result);
 
       try {
-        // Clean up the response string by removing markdown code block markers
         let cleanResponse = result.response;
         if (typeof cleanResponse === 'string') {
-          // Remove markdown code block markers and any language identifier
           cleanResponse = cleanResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
           const evaluationData = JSON.parse(cleanResponse);
           
@@ -114,11 +109,12 @@ export function Repos() {
             throw new Error('Invalid evaluation data format');
           }
 
-          // Navigate to analysis page with evaluation data
-          const encodedData = encodeURIComponent(JSON.stringify(evaluationData));
-          router.push(`/analysis?data=${encodedData}`);
+          // Instead of URL params, use context
+          setEvaluationData(evaluationData);
+          router.push('/analysis');
         } else {
-          router.push(`/analysis?data=${encodeURIComponent(JSON.stringify(result.response))}`);
+          setEvaluationData(result.response);
+          router.push('/analysis');
         }
       } catch (err) {
         console.error('JSON parsing error:', err);

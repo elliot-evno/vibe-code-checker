@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Octokit } from "octokit";
-import env from "../../env/environment";
+import env from "../../../env/environment";
 
 const octokit = new Octokit({
   auth: env.GITHUB_TOKEN
