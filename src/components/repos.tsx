@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { 
   BarChart, 
   PieChart,
@@ -8,13 +9,14 @@ import {
 } from '@mui/x-charts';
 
 export function Repos() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [repoName, setRepoName] = useState("");
   const [files, setFiles] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
-  const [evaluation, setEvaluation] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +59,7 @@ export function Repos() {
   };
 
   const handleEvaluateCodebase = async (files: any[]) => {
+    setIsAnalyzing(true);
     try {
       // Filter out directories and files without content
       const codeFiles = files.filter(file => 
@@ -111,207 +114,22 @@ export function Repos() {
             throw new Error('Invalid evaluation data format');
           }
 
-          setEvaluation(evaluationData);
+          // Navigate to analysis page with evaluation data
+          const encodedData = encodeURIComponent(JSON.stringify(evaluationData));
+          router.push(`/analysis?data=${encodedData}`);
         } else {
-      setEvaluation(result.response);
+          router.push(`/analysis?data=${encodeURIComponent(JSON.stringify(result.response))}`);
         }
       } catch (err) {
         console.error('JSON parsing error:', err);
-        setEvaluation(`Error parsing evaluation data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        setError(`Error parsing evaluation data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        setIsAnalyzing(false);
       }
     } catch (err) {
       console.error('Evaluation error:', err);
-      setEvaluation(`Error: ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
+      setError(`Error: ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
+      setIsAnalyzing(false);
     }
-  };
-
-  const renderEvaluation = (data: any) => {
-    // Prepare data for charts
-    const scoreData = [
-      { name: 'Code Quality', value: data.scores.codeQuality },
-      { name: 'Type Usage', value: data.scores.typeUsage },
-      { name: 'Error Handling', value: data.scores.errorHandling },
-      { name: 'Code Structure', value: data.scores.codeStructure },
-      { name: 'Documentation', value: data.scores.documentation },
-      { name: 'Security', value: data.scores.security },
-      { name: 'Performance', value: data.scores.performance },
-    ];
-
-    const vulnerabilityData = [
-      data.securityMetrics.vulnerabilities.critical,
-      data.securityMetrics.vulnerabilities.high,
-      data.securityMetrics.vulnerabilities.medium,
-      data.securityMetrics.vulnerabilities.low,
-    ];
-
-    return (
-      <div className="space-y-8">
-        {/* Overall Score Card */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg text-white">
-          <h2 className="text-2xl font-bold mb-2">Overall Score</h2>
-          <div className="text-4xl font-bold">
-            {data.scores.overallScore?.toFixed(1) || 'N/A'}/100
-          </div>
-        </div>
-
-        {/* Score Overview */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Score Breakdown</h3>
-          <BarChart
-            xAxis={[{ 
-              scaleType: 'band', 
-              data: scoreData.map(item => item.name) 
-            }]}
-            series={[{
-              data: scoreData.map(item => item.value),
-              color: '#8884d8'
-            }]}
-            height={300}
-            margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-          />
-        </div>
-
-        {/* Code Quality Section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Code Quality Metrics</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left column */}
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Maintainability</h4>
-                <div className="text-3xl font-bold text-blue-600">
-                  {data.codeQualityMetrics.maintainabilityIndex}/100
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Maintainability Index</div>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Technical Debt</h4>
-                <div className="text-3xl font-bold text-orange-500">
-                  {data.codeQualityMetrics.technicalDebtRatio}%
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Technical Debt Ratio</div>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Code Smells</h4>
-                <div className="text-3xl font-bold text-red-500">
-                  {data.codeQualityMetrics.codeSmells}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Total Code Smells</div>
-              </div>
-            </div>
-
-            {/* Right column - Complexity Distribution */}
-            <div>
-              <h4 className="font-medium mb-4">Complexity Distribution</h4>
-              <PieChart
-                series={[{
-                  data: [
-                    { id: 0, value: data.codeQualityMetrics.complexityDistribution.low, label: 'Low' },
-                    { id: 1, value: data.codeQualityMetrics.complexityDistribution.medium, label: 'Medium' },
-                    { id: 2, value: data.codeQualityMetrics.complexityDistribution.high, label: 'High' },
-                    { id: 3, value: data.codeQualityMetrics.complexityDistribution.veryHigh, label: 'Very High' },
-                  ],
-                  highlightScope: { faded: 'global', highlighted: 'item' },
-                }]}
-                height={200}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Security Section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Security Analysis</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left column - Vulnerability Chart */}
-            <div>
-              <h4 className="font-medium mb-4">Vulnerabilities by Severity</h4>
-              <BarChart
-                xAxis={[{ 
-                  scaleType: 'band', 
-                  data: ['Critical', 'High', 'Medium', 'Low']
-                }]}
-                series={[{
-                  data: vulnerabilityData,
-                  color: ['#dc3545', '#ff4d4d', '#ffa500', '#4caf50'] as any
-                }]}
-                height={200}
-              />
-            </div>
-
-            {/* Right column - Security Metrics */}
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Security Hotspots</h4>
-                <div className="text-3xl font-bold text-yellow-500">
-                  {data.securityMetrics.securityHotspots}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Areas Needing Review</div>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Authentication Coverage</h4>
-                <div className="text-3xl font-bold text-green-600">
-                  {data.securityMetrics.authenticationCoverage}%
-                </div>
-                <div className="text-sm text-gray-500 mt-1">Auth Coverage</div>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium mb-2">Secure Code Practices</h4>
-                <SparkLineChart
-                  data={[data.securityMetrics.secureCodePractices]}
-                  height={60}
-                  showTooltip
-                  showHighlight
-                />
-                <div className="text-sm text-gray-500 mt-1">Score: {data.securityMetrics.secureCodePractices}/100</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Codebase Overview */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Codebase Metrics</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold">{data.metrics.totalFiles}</div>
-              <div className="text-sm text-gray-500">Total Files</div>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold">{data.metrics.totalLines}</div>
-              <div className="text-sm text-gray-500">Lines of Code</div>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold">{data.metrics.commentRatio}%</div>
-              <div className="text-sm text-gray-500">Comment Ratio</div>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold">{data.metrics.duplication}%</div>
-              <div className="text-sm text-gray-500">Code Duplication</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Improvement Tips */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Improvement Tips</h3>
-          <ul className="space-y-2">
-            {data.improvementTips.map((tip: string, index: number) => (
-              <li key={index} className="flex items-start p-2 bg-blue-50 rounded">
-                <span className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white mr-3">
-                  {index + 1}
-                </span>
-                <span className="text-gray-700">{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -377,8 +195,9 @@ export function Repos() {
               <button
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => handleEvaluateCodebase(files)}
+                disabled={isAnalyzing}
               >
-                Evaluate Codebase
+                {isAnalyzing ? 'Analyzing...' : 'Analyze Codebase'}
               </button>
             </div>
           </div>
@@ -398,18 +217,6 @@ export function Repos() {
               </li>
             ))}
           </ul>
-        </div>
-      )}
-
-      {evaluation && (
-        <div className="text-black bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-4">
-          {typeof evaluation === 'string' ? (
-            <div className="text-black">
-              <pre>{evaluation}</pre>
-          </div>
-          ) : (
-            renderEvaluation(evaluation)
-          )}
         </div>
       )}
     </div>
