@@ -36,7 +36,7 @@ const StyledWrapper = styled.div`
     position: relative;
     width: 100%;
     height: 100%;
-    --c: #09f;
+    --c: #00ff00;
     background-color: #000;
     background-image: radial-gradient(4px 100px at 0px 235px, var(--c), #0000),
       radial-gradient(4px 100px at 300px 235px, var(--c), #0000),
