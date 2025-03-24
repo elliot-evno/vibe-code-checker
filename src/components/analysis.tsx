@@ -10,15 +10,11 @@ import {
 
 const StatCard = ({ value, label }: { value: string | number, label: string }) => {
   return (
-    <div className="relative w-[200px] h-[180px] rounded-lg p-[1px] bg-[radial-gradient(circle_180px_at_0%_0%,#ffffff,#0c0d0d)] overflow-hidden">
+    <div className="relative w-[280px] h-[220px] rounded-lg p-[1px] bg-[radial-gradient(circle_180px_at_0%_0%,#ffffff,#0c0d0d)] overflow-hidden">
       {/* Main card */}
       <div className="relative w-full h-full rounded-lg border border-[#202222] 
         bg-[radial-gradient(circle_200px_at_0%_0%,#444444,#0c0d0d)]
         flex flex-col items-center justify-center">
-        
-        {/* Light ray effect */}
-        <div className="absolute w-[160px] h-[35px] rounded-full bg-[#c7c7c7] opacity-40 
-          shadow-[0_0_50px_#fff] blur-[10px] origin-[10%] top-0 left-0 rotate-[40deg] z-[1]" />
         
         {/* Grid lines */}
         <div className="absolute top-[10%] w-full h-[1px] bg-gradient-to-r from-[#888888] via-[#888888] to-[#1d1f1f] z-[2]" />
@@ -27,14 +23,14 @@ const StatCard = ({ value, label }: { value: string | number, label: string }) =
         <div className="absolute right-[10%] w-[1px] h-full bg-[#2c2c2c] z-[2]" />
         
         {/* Content */}
-        <span className="relative z-[3] text-4xl font-bold bg-gradient-to-r from-[#ffffff80] via-white to-[#ffffff80] bg-clip-text text-transparent
+        <span className="relative z-[3] text-5xl font-bold bg-gradient-to-r from-[#ffffff80] via-white to-[#ffffff80] bg-clip-text text-transparent
           drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
           {value}
         </span>
-        <span className="relative z-[3] text-white/80 mt-2 text-sm">{label}</span>
+        <span className="relative z-[3] text-white/80 mt-3 text-lg">{label}</span>
       </div>
 
-      {/* Animated dot - moved to top level */}
+      {/* Animated dot */}
       <div className="absolute w-[5px] h-[5px] bg-white rounded-full shadow-[0_0_10px_#ffffff] z-[4]
         animate-[moveDot_6s_linear_infinite]" />
     </div>
@@ -119,7 +115,7 @@ export default function Analysis() {
       <div className="space-y-8">
         {/* Stats Grid */}
         <div className="flex justify-center mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 place-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 place-items-center">
             <StatCard 
               value={`${(evaluation.scores.overallScore / 10)}/10`} 
               label="✨ Overall Score ✨" 
@@ -131,14 +127,6 @@ export default function Analysis() {
             <StatCard 
               value={`${(evaluation.scores.security / 10)}/10`} 
               label="Security 🛡️" 
-            />
-            <StatCard 
-              value={`${(evaluation.scores.typeUsage / 10)}/10`} 
-              label="Type Safety 🎯" 
-            />
-            <StatCard 
-              value={`${(evaluation.scores.documentation / 10)}/10`} 
-              label="Docs 📚" 
             />
           </div>
         </div>
