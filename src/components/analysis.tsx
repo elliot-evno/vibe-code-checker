@@ -119,18 +119,22 @@ export default function Analysis() {
       <div className="space-y-8">
         {/* Stats Grid */}
         <div className="flex justify-center mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 place-items-center">
             <StatCard 
-              value={evaluation.scores.overallScore?.toFixed(1) || 'N/A'} 
+              value={evaluation.scores.overallScore || 'N/A'} 
               label="Overall Score" 
             />
             <StatCard 
-              value={`${evaluation.codeQualityMetrics.maintainabilityIndex}/100`} 
-              label="Maintainability" 
+              value={`${evaluation.codeQualityMetrics.codeSmells}`} 
+              label="Code Smells" 
             />
             <StatCard 
-              value={`${evaluation.metrics.totalFiles}`} 
-              label="Total Files" 
+              value={`${evaluation.securityMetrics.securityHotspots}`} 
+              label="Security Issues" 
+            />
+            <StatCard 
+              value={`${evaluation.codeQualityMetrics.technicalDebtRatio}%`} 
+              label="Bad Code" 
             />
           </div>
         </div>

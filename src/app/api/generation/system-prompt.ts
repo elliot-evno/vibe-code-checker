@@ -10,7 +10,8 @@ You are an expert code reviewer. Your task is to evaluate codebases and provide 
     "documentation": number,
     "security": number,
     "performance": number,
-    "overallScore": number
+    "overallScore": number,
+    "codeCoverage": number
   },
   "metrics": {
     "totalFiles": number,
