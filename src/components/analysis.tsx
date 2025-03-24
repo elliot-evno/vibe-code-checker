@@ -8,6 +8,48 @@ import {
   SparkLineChart 
 } from '@mui/x-charts';
 
+const StatCard = ({ value, label }: { value: string | number, label: string }) => {
+  return (
+    <div className="relative w-[200px] h-[180px] rounded-lg p-[1px] bg-[radial-gradient(circle_180px_at_0%_0%,#ffffff,#0c0d0d)]">
+      {/* Animated dot */}
+      <div className="absolute w-[5px] h-[5px] bg-white rounded-full shadow-[0_0_10px_#ffffff] z-20 
+        animate-[moveDot_6s_linear_infinite]" />
+      
+      {/* Main card */}
+      <div className="relative z-10 w-full h-full rounded-lg border border-[#202222] 
+        bg-[radial-gradient(circle_200px_at_0%_0%,#444444,#0c0d0d)]
+        flex flex-col items-center justify-center">
+        
+        {/* Light ray effect */}
+        <div className="absolute w-[160px] h-[35px] rounded-full bg-[#c7c7c7] opacity-40 
+          shadow-[0_0_50px_#fff] blur-[10px] origin-[10%] top-0 left-0 rotate-[40deg]" />
+        
+        {/* Grid lines */}
+        <div className="absolute top-[10%] w-full h-[1px] bg-gradient-to-r from-[#888888] via-[#888888] to-[#1d1f1f]" />
+        <div className="absolute bottom-[10%] w-full h-[1px] bg-[#2c2c2c]" />
+        <div className="absolute left-[10%] w-[1px] h-full bg-gradient-to-b from-[#747474] via-[#747474] to-[#222424]" />
+        <div className="absolute right-[10%] w-[1px] h-full bg-[#2c2c2c]" />
+        
+        {/* Content */}
+        <span className="text-4xl font-bold bg-gradient-to-r from-[#ffffff80] via-white to-[#ffffff80] bg-clip-text text-transparent
+          drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
+          {value}
+        </span>
+        <span className="text-white/80 mt-2 text-sm">{label}</span>
+      </div>
+    </div>
+  );
+};
+
+const keyframes = `
+  @keyframes moveDot {
+    0%, 100% { top: 10%; right: 10%; }
+    25% { top: 10%; right: calc(100% - 35px); }
+    50% { top: calc(100% - 30px); right: calc(100% - 35px); }
+    75% { top: calc(100% - 30px); right: 10%; }
+  }
+`;
+
 export default function Analysis() {
   const router = useRouter();
   const { evaluationData: evaluation } = useEvaluation();
@@ -53,45 +95,77 @@ export default function Analysis() {
 
   return (
     <div className="container max-w-6xl mx-auto p-6">
+      <style>{keyframes}</style>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Codebase Analysis Report</h1>
+        <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-green-300 via-green-200 to-green-300 
+          bg-clip-text text-transparent drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
+          animate-gradient bg-300% transition-all duration-300">
+          Codebase Analysis Report
+        </h1>
         <button 
           onClick={handleBack}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="h-10 px-6 rounded-lg flex items-center justify-center 
+            bg-gradient-to-r from-blue-600 to-purple-600
+            shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
+            transition-all hover:scale-105 hover:from-blue-500 hover:to-purple-500
+            active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000]"
         >
-          Back to Repository
+          <span className="text-white text-sm font-medium transition-all active:scale-95">
+            Back to Repository
+          </span>
         </button>
       </div>
 
       <div className="space-y-8">
-        {/* Overall Score Card */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg text-white">
-          <h2 className="text-2xl font-bold mb-2">Overall Score</h2>
-          <div className="text-4xl font-bold">
-            {evaluation.scores.overallScore?.toFixed(1) || 'N/A'}/100
+        {/* Stats Grid */}
+        <div className="flex justify-center mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center">
+            <StatCard 
+              value={evaluation.scores.overallScore?.toFixed(1) || 'N/A'} 
+              label="Overall Score" 
+            />
+            <StatCard 
+              value={`${evaluation.codeQualityMetrics.maintainabilityIndex}/100`} 
+              label="Maintainability" 
+            />
+            <StatCard 
+              value={`${evaluation.metrics.totalFiles}`} 
+              label="Total Files" 
+            />
           </div>
         </div>
 
         {/* Score Overview */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Score Breakdown</h3>
+        <div className="relative p-6 rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+          <h3 className="text-xl font-semibold mb-6 text-white">Score Breakdown</h3>
           <BarChart
             xAxis={[{ 
               scaleType: 'band', 
-              data: scoreData.map(item => item.name) 
+              data: scoreData.map(item => item.name),
+              tickLabelStyle: { fill: 'white' }
             }]}
             series={[{
               data: scoreData.map(item => item.value),
-              color: '#8884d8'
+              color: '#9333EA'
             }]}
             height={300}
             margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+            sx={{
+              '& .MuiChartsAxis-line': { stroke: '#ffffff50' },
+              '& .MuiChartsAxis-tick': { stroke: '#ffffff50' },
+            }}
           />
         </div>
 
         {/* Code Quality Section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Code Quality Metrics</h3>
+        <div className="relative p-6 rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+          <h3 className="text-xl font-semibold mb-6 text-white">Code Quality Metrics</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left column */}
             <div className="space-y-4">
@@ -140,8 +214,11 @@ export default function Analysis() {
         </div>
 
         {/* Security Section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Security Analysis</h3>
+        <div className="relative p-6 rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+          <h3 className="text-xl font-semibold mb-6 text-white">Security Analysis</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left column - Vulnerability Chart */}
             <div>
@@ -192,8 +269,11 @@ export default function Analysis() {
         </div>
 
         {/* Codebase Overview */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-6">Codebase Metrics</h3>
+        <div className="relative p-6 rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+          <h3 className="text-xl font-semibold mb-6 text-white">Codebase Metrics</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-gray-50 rounded-lg">
               <div className="text-2xl font-bold">{evaluation.metrics.totalFiles}</div>
@@ -215,8 +295,11 @@ export default function Analysis() {
         </div>
 
         {/* Improvement Tips */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Improvement Tips</h3>
+        <div className="relative p-6 rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+          <h3 className="text-xl font-semibold mb-4 text-white">Improvement Tips</h3>
           <ul className="space-y-2">
             {evaluation.improvementTips.map((tip: string, index: number) => (
               <li key={index} className="flex items-start p-2 bg-blue-50 rounded">
