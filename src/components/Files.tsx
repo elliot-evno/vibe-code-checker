@@ -15,6 +15,22 @@ interface FilesProps {
   onEvaluateCodebase: (files: FileType[]) => void;
 }
 
+const spinnerStyles = `
+  @keyframes spinning82341 {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const cardStyles = `
+  @keyframes rotate {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+`;
+
 export default function Files({
   files,
   error,
@@ -66,6 +82,8 @@ export default function Files({
 
   return (
     <>
+      <style>{spinnerStyles}</style>
+      <style>{cardStyles}</style>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 animate-fadeIn" role="alert">
           <span className="block sm:inline">{error}</span>
@@ -73,60 +91,78 @@ export default function Files({
       )}
 
       {files.length > 0 && (
-        <div className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-xl rounded-2xl px-8 pt-6 pb-8 mb-4 animate-slideIn">
+        <div className="relative p-4 mb-4 animate-slideIn rounded-2xl
+          bg-[#14141B]
+          bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_14%_26%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_0%_64%,hsla(263,93%,56%,1)_0px,transparent_85%),radial-gradient(at_41%_94%,hsla(284,100%,84%,1)_0px,transparent_85%),radial-gradient(at_100%_99%,hsla(306,100%,57%,1)_0px,transparent_85%)]
+          shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]"
+        >
+          <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+            w-[calc(100%+2px)] h-[calc(100%+2px)] overflow-hidden rounded-2xl
+            bg-gradient-to-b from-white/50 to-white/40 pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+              w-[200%] h-40
+              bg-gradient-to-b from-transparent via-[#9333EA] to-transparent
+              animate-[rotate_8s_linear_infinite]">
+            </div>
+          </div>
+
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold text-white">
                 Files
               </h2>
               {currentPath && (
-                <div className="h-6 w-px bg-gradient-to-b from-blue-200 to-purple-200"></div>
+                <div className="h-6 w-px bg-[#2A2A36]"></div>
               )}
               {renderBreadcrumbs()}
             </div>
             <div className="space-x-3">
-              {currentPath && (
-                <button
-                  className="inline-flex items-center px-4 py-2 bg-white border border-blue-500 text-blue-500 rounded-xl
-                            hover:bg-blue-50 hover:border-blue-600 hover:text-blue-600 
-                            transition-all duration-200 ease-in-out transform hover:scale-102 shadow-sm"
-                  onClick={() => onNavigate("..")}
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                  Back
-                </button>
-              )}
+          
               <button
-                className={`inline-flex items-center px-5 py-2 rounded-xl transition-all duration-200 ease-in-out transform hover:scale-102
-                          ${isAnalyzing 
-                            ? 'bg-purple-500 hover:bg-purple-600' 
-                            : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
-                          } text-white shadow-lg hover:shadow-xl hover:shadow-blue-500/20`}
+                className={`h-10 px-6 rounded-lg flex items-center justify-center 
+                  bg-gradient-to-r from-blue-600 to-purple-600
+                  shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
+                  transition-all hover:scale-105 hover:from-blue-500 hover:to-purple-500
+                  active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000]
+                  disabled:opacity-50 disabled:hover:scale-100`}
                 onClick={() => onEvaluateCodebase(files)}
                 disabled={isAnalyzing}
                 style={{ cursor: 'pointer' }}
               >
-                {isAnalyzing ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                    Analyze Codebase
-                  </>
-                )}
+                <span className="text-white text-sm font-medium transition-all active:scale-95 flex items-center">
+                  {isAnalyzing ? (
+                    <div className="flex items-center">
+                      <div className="relative w-5 h-5 mr-2">
+                        <div className="absolute inset-0 
+                          bg-gradient-to-b from-[rgb(186,66,255)] to-[rgb(0,225,255)]
+                          rounded-full animate-[spinning82341_1.7s_linear_infinite]
+                          blur-[1px]
+                          shadow-[0px_-5px_20px_0px_rgb(186,66,255),0px_5px_20px_0px_rgb(0,225,255)]"
+                        >
+                        </div>
+                        <div className="absolute inset-0.5
+                          bg-[rgb(36,36,36)]
+                          rounded-full
+                          blur-sm"
+                        >
+                        </div>
+                      </div>
+                      Analyzing...
+                    </div>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                      Analyze
+                    </>
+                  )}
+                </span>
               </button>
             </div>
           </div>
+
+          <hr className="w-full h-[0.1rem] bg-[#2A2A36] border-none mb-4" />
 
           <div className="relative">
             <ul className="space-y-1.5">
@@ -135,38 +171,33 @@ export default function Files({
                   key={file.path}
                   className={`group rounded-xl p-3 transition-all duration-200 ease-in-out
                             ${file.type === "dir" 
-                              ? 'hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-purple-50/50 hover:shadow-md border border-transparent hover:border-blue-100/50' 
-                              : 'hover:bg-gray-50/50 hover:shadow-sm border border-transparent hover:border-gray-100/50'
-                            } cursor-pointer backdrop-blur-sm`}
-                  onClick={() => file.type === "dir" && onNavigate(file.path)}
+                              ? 'hover:bg-white/5' 
+                              : 'hover:bg-white/5'
+                            } cursor-pointer`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center min-w-0">
                       <div className="transform group-hover:scale-110 transition-transform duration-200">
                         {file.type === "dir" ? (
-                          <div className="p-1.5 rounded-lg bg-blue-50 group-hover:bg-blue-100/70 transition-colors duration-200">
-                            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="p-1.5 rounded-lg bg-purple-600/20 group-hover:bg-purple-600/30 transition-colors duration-200">
+                            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                             </svg>
                           </div>
                         ) : (
-                          <div className="p-1.5 rounded-lg bg-purple-50 group-hover:bg-purple-100/70 transition-colors duration-200">
-                            <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="p-1.5 rounded-lg bg-purple-600/20 group-hover:bg-purple-600/30 transition-colors duration-200">
+                            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                           </div>
                         )}
                       </div>
-                      <span className={`ml-3 truncate ${
-                        file.type === "dir" 
-                          ? 'font-medium text-blue-700 group-hover:text-blue-800' 
-                          : 'text-gray-600 group-hover:text-gray-800'
-                      }`}>
+                      <span className={`ml-3 truncate text-white group-hover:text-purple-300`}>
                         {file.name}
                       </span>
                     </div>
                     {file.type === "file" && (
-                      <span className="text-sm text-purple-500 opacity-75 group-hover:opacity-100 ml-3 flex-shrink-0">
+                      <span className="text-sm text-purple-400 opacity-75 group-hover:opacity-100 ml-3 flex-shrink-0">
                         {formatFileSize(file.size)}
                       </span>
                     )}
