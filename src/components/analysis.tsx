@@ -117,15 +117,15 @@ export default function Analysis() {
         <div className="flex justify-center mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 place-items-center">
             <StatCard 
-              value={`${(evaluation.scores.overallScore / 10)}/10`} 
+              value={`${(evaluation.scores.overallScore )}/10`} 
               label="✨ Overall Score ✨" 
             />
             <StatCard 
-              value={`${(evaluation.scores.codeQuality / 10)}/10`} 
+              value={`${(evaluation.scores.codeQuality )}/10`} 
               label="Code Quality 🎨" 
             />
             <StatCard 
-              value={`${(evaluation.scores.security / 10)}/10`} 
+              value={`${(evaluation.scores.security )}/10`} 
               label="Security 🛡️" 
             />
           </div>
@@ -136,24 +136,59 @@ export default function Analysis() {
           bg-[#14141B]
           bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
           shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
-          <h3 className="text-xl font-semibold mb-6 text-white">📊 Score Breakdown</h3>
+          <h3 className="text-xl font-semibold mb-6 text-white">
+            <span className="mr-2">📊</span> 
+            Score Breakdown
+            <span className="text-sm font-normal text-gray-400 ml-2">Hover over bars for details!</span>
+          </h3>
           <BarChart
             xAxis={[{ 
               scaleType: 'band', 
               data: scoreData.map(item => item.name),
-              tickLabelStyle: { fill: 'white' }
+              tickLabelStyle: {
+                fill: '#94a3b8',
+                fontSize: 12,
+                fontWeight: 500
+              }
             }]}
             series={[{
               data: scoreData.map(item => item.value),
-              color: '#9333EA'
+              color: '#8b5cf6',
+              valueFormatter: (value: number | null) => 
+                value !== null ? `${(value)}/10` : 'N/A'
             }]}
             height={300}
-            margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+            margin={{ top: 20, bottom: 40, left: 40, right: 20 }}
             sx={{
-              '& .MuiChartsAxis-line': { stroke: '#ffffff50' },
-              '& .MuiChartsAxis-tick': { stroke: '#ffffff50' },
+              '& .MuiChartsAxis-line': { stroke: '#334155' },
+              '& .MuiChartsAxis-tick': { stroke: '#334155' },
+              '& .MuiBarElement-root': {
+                fill: 'url(#gradient)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  filter: 'brightness(1.2)',
+                  cursor: 'pointer',
+                  transform: 'translateY(-2px)'
+                }
+              },
+              '& .MuiChartsAxis-tickLabel': {
+                transform: 'rotate(-45deg) translateX(-20px)',
+              }
             }}
-          />
+            slotProps={{
+              legend: {
+                hidden: true
+              }
+            }}
+          >
+            <defs>
+              <linearGradient id="gradient" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor="#4338ca" />
+                <stop offset="50%" stopColor="#8b5cf6" />
+                <stop offset="100%" stopColor="#c084fc" />
+              </linearGradient>
+            </defs>
+          </BarChart>
         </div>
 
         {/* Code Quality Section */}
