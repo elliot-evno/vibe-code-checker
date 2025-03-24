@@ -59,18 +59,18 @@ Evaluation criteria:
 Please provide detailed analysis for:
 
 1. Code Quality:
-- Maintainability Index (0-100)
-- Technical Debt Ratio (percentage)
-- Code Smells (count)
-- Complexity Distribution (percentage in each category)
-- Average File Size (in lines)
+- Maintainability Index (0-10)
+- Technical Debt Ratio (0-10)
+- Code Smells (0-10)
+- Complexity Distribution (0-10)
+- Average File Size (0-10)
 
 2. Security:
-- Vulnerabilities by severity
-- Security Hotspots count
-- Authentication/Authorization coverage (percentage)
-- Dependency vulnerabilities count
-- Secure coding practices score (0-100)
+- Vulnerabilities by severity (0-10)
+- Security Hotspots count (0-10)
+- Authentication/Authorization coverage (0-10)
+- Dependency vulnerabilities count (0-10)
+- Secure coding practices score (0-10)
 
-All scores must be between 1 and 100 unless specified otherwise. Provide specific and actionable improvement tips in the improvementTips array. Be constructive in your feedback.
+All scores must be normalized to a 0-10 scale for consistency and intuitive understanding. Provide specific and actionable improvement tips in the improvementTips array. Be constructive in your feedback.
 `;
