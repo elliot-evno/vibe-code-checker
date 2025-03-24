@@ -132,7 +132,12 @@ export function Repos() {
 
   return (
     <div className="container max-w-2xl mx-auto p-4 relative z-10">
-      <h1 className="text-2xl font-bold mb-4 text-center text-white">GitHub Repository Browser</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-green-300 via-green-200 to-green-300 
+        bg-clip-text text-transparent drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
+        animate-gradient bg-300% transition-all duration-300
+        hover:scale-105 cursor-default">
+        Vibe Code Checker
+      </h1>
       <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 mb-4">
         <div className="flex flex-col gap-8 mb-6">
           <div className="flex flex-col gap-7 relative text-white">
