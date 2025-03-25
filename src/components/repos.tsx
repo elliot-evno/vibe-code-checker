@@ -131,82 +131,86 @@ export function Repos() {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto p-4 relative z-10">
-      <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-green-300 via-green-200 to-green-300 
-        bg-clip-text text-transparent drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
-        animate-gradient bg-300% transition-all duration-300
-        hover:scale-105 cursor-default">
-        Vibe Code Checker
-      </h1>
-      <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 mb-4">
-        <div className="flex flex-col gap-8 mb-6">
-          <div className="flex flex-col gap-7 relative text-white">
-            <input
-              className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
-              bg-black/30 backdrop-blur-sm
-              shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
-              focus:border-2 focus:border-transparent
-              focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
-              valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
-              peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
-              peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
-              Username
-            </label>
-          </div>
+    <div className="container max-w-4xl mx-auto p-4 relative z-10">
+      <div className="mx-8 p-8 rounded-lg bg-black backdrop-blur-sm shadow-lg">
+        <h1 className="text-6xl font-bold mb-14 text-center 
+          bg-gradient-to-b from-[#E5E5E5] via-[#E5E5E5] via-[29%] to-[#737373]
+          bg-clip-text text-transparent
+          animate-gradient bg-300% transition-all duration-300
+          hover:scale-105 cursor-default">
+          Vibe Code Checker
+        </h1>
+        <form onSubmit={handleSubmit} className="pb-8 mb-4 flex flex-col items-center">
+          <div className="flex flex-col gap-8 mb-6">
+            <div className="flex flex-col gap-7 relative text-white">
+              <input
+                className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
+                bg-black/30 backdrop-blur-sm
+                shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
+                focus:border-2 focus:border-transparent
+                focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
+                valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
+                peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
+                peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+                Username
+              </label>
+            </div>
 
-          <div className="flex flex-col gap-7 relative text-white">
-            <input
-              className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
-              bg-black/30 backdrop-blur-sm
-              shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
-              focus:border-2 focus:border-transparent
-              focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
-              valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
-              type="text"
-              value={repoName}
-              onChange={(e) => setRepoName(e.target.value)}
-              required
-            />
-            <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
-              peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
-              peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
-              Repo Name
-            </label>
+            <div className="flex flex-col gap-7 relative text-white">
+              <input
+                className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
+                bg-black/30 backdrop-blur-sm
+                shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
+                focus:border-2 focus:border-transparent
+                focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
+                valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+                type="text"
+                value={repoName}
+                onChange={(e) => setRepoName(e.target.value)}
+                required
+              />
+              <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
+                peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
+                peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+                Repo Name
+              </label>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <button
-            className="h-10 px-6 rounded-lg flex items-center justify-center 
-            bg-gradient-to-r from-green-800 to-green-600
-            shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
-            transition-all hover:scale-105 hover:from-green-700 hover:to-green-500
-            active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000] 
-            disabled:opacity-50 disabled:hover:scale-100"
-            type="submit"
-            disabled={isLoading}
-            style={{ cursor: 'pointer' }}
-          >
-            <span className="text-white text-sm font-medium transition-all active:scale-95">
-              {isLoading ? 'Loading...' : 'Browse Repository'}
-            </span>
-          </button>
-        </div>
-      </form>
-      <Files 
-        files={files}
-        error={error}
-        currentPath={currentPath}
-        isAnalyzing={isAnalyzing}
-        onNavigate={handleNavigate}
-        onEvaluateCodebase={handleEvaluateCodebase}
-      />
+          
+          <div className="flex items-center justify-center w-full">
+            <button
+              className="h-14 px-10 rounded-lg flex items-center justify-center 
+              bg-gradient-to-r from-[#4F46E5] via-[#3B82F6] to-[#06B6D4]
+              shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
+              transition-all hover:scale-105 
+              hover:from-[#4338CA] hover:via-[#2563EB] hover:to-[#0891B2]
+              active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000] 
+              disabled:opacity-50 disabled:hover:scale-100"
+              type="submit"
+              disabled={isLoading}
+              style={{ cursor: 'pointer' }}
+            >
+              <span className="text-white text-lg font-semibold transition-all active:scale-95">
+                {isLoading ? 'Loading...' : 'Browse Repository'}
+              </span>
+            </button>
+          </div>
+        </form>
+        <Files 
+          files={files}
+          error={error}
+          currentPath={currentPath}
+          isAnalyzing={isAnalyzing}
+          onNavigate={handleNavigate}
+          onEvaluateCodebase={handleEvaluateCodebase}
+        />
+      </div>
     </div>
   );
 }
