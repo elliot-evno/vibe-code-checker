@@ -9,29 +9,41 @@ import {
 
 const StatCard = ({ value, label }: { value: string | number, label: string }) => {
   return (
-    <div className="relative w-[280px] h-[220px] rounded-lg p-[1px] bg-[radial-gradient(circle_180px_at_0%_0%,#ffffff,#0c0d0d)] overflow-hidden">
+    <div className="relative w-[280px] h-[220px] rounded-xl p-[1px] overflow-hidden
+                    bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6] shadow-lg">
       {/* Main card */}
-      <div className="relative w-full h-full rounded-lg border border-[#202222] 
-        bg-[radial-gradient(circle_200px_at_0%_0%,#444444,#0c0d0d)]
+      <div className="relative w-full h-full rounded-xl border border-white/30 
+        bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
         flex flex-col items-center justify-center">
         
         {/* Grid lines */}
-        <div className="absolute top-[10%] w-full h-[1px] bg-gradient-to-r from-[#888888] via-[#888888] to-[#1d1f1f] z-[2]" />
-        <div className="absolute bottom-[10%] w-full h-[1px] bg-[#2c2c2c] z-[2]" />
-        <div className="absolute left-[10%] w-[1px] h-full bg-gradient-to-b from-[#747474] via-[#747474] to-[#222424] z-[2]" />
-        <div className="absolute right-[10%] w-[1px] h-full bg-[#2c2c2c] z-[2]" />
+        <div className="absolute top-[10%] w-full h-[1px] bg-white/30" />
+        <div className="absolute bottom-[10%] w-full h-[1px] bg-white/30" />
+        <div className="absolute left-[10%] w-[1px] h-full bg-white/30" />
+        <div className="absolute right-[10%] w-[1px] h-full bg-white/30" />
         
         {/* Content */}
-        <span className="relative z-[3] text-5xl font-bold bg-gradient-to-r from-[#ffffff80] via-white to-[#ffffff80] bg-clip-text text-transparent
-          drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
+        <span className="relative z-[3] text-5xl font-bold text-white
+          drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
           {value}
         </span>
-        <span className="relative z-[3] text-white/80 mt-3 text-lg">{label}</span>
+        <span className="relative z-[3] text-white mt-3 text-lg font-medium">{label}</span>
       </div>
 
       {/* Animated dot */}
       <div className="absolute w-[5px] h-[5px] bg-white rounded-full shadow-[0_0_10px_#ffffff] z-[4]
         animate-[moveDot_6s_linear_infinite]" />
+        
+      {/* Glass effect overlay */}
+      <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+        w-[calc(100%+2px)] h-[calc(100%+2px)] overflow-hidden rounded-xl
+        bg-gradient-to-b from-white/40 to-white/10 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+          w-[200%] h-40
+          bg-gradient-to-b from-white/50 via-white/20 to-transparent
+          animate-[rotate_8s_linear_infinite]">
+        </div>
+      </div>
     </div>
   );
 };
@@ -42,6 +54,12 @@ const keyframes = `
     25% { top: 10%; right: 88%; }
     50% { top: 88%; right: 88%; }
     75% { top: 88%; right: 10%; }
+  }
+  
+  @keyframes rotate {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
   }
 `;
 
@@ -97,20 +115,18 @@ export default function Analysis() {
       <div className="container max-w-6xl mx-auto p-6">
         <style>{keyframes}</style>
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-green-300 via-green-200 to-green-300 
-            bg-clip-text text-transparent drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]
-            animate-gradient bg-300% transition-all duration-300">
+          <h1 className="text-4xl font-bold text-center text-white">
             ✨ Codebase Vibe Check ✨
           </h1>
           <button 
             onClick={handleBack}
             className="h-10 px-6 rounded-lg flex items-center justify-center 
-              bg-gradient-to-r from-blue-600 to-purple-600
-              shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
-              transition-all hover:scale-105 hover:from-blue-500 hover:to-purple-500
-              active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000]"
+              bg-gradient-to-r from-white/70 to-white/50
+              shadow-[4px_4px_6px_rgba(0,0,0,0.1),inset_1px_1px_1px_rgba(255,255,255,0.7)] 
+              transition-all hover:scale-105 hover:from-white/80 hover:to-white/60
+              active:shadow-[0px_0px_0px_rgba(0,0,0,0.1),inset_0.5px_0.5px_2px_rgba(0,0,0,0.3)]"
           >
-            <span className="text-white text-sm font-medium transition-all active:scale-95">
+            <span className="text-[#3168C5] text-sm font-medium transition-all active:scale-95">
               👈 Back to Repo
             </span>
           </button>
@@ -126,7 +142,7 @@ export default function Analysis() {
               />
               <StatCard 
                 value={`${(evaluation.scores.codeQuality )}/10`} 
-                label="Code Quality ��" 
+                label="Code Quality 🎨" 
               />
               <StatCard 
                 value={`${(evaluation.scores.security )}/10`} 
@@ -135,39 +151,50 @@ export default function Analysis() {
             </div>
           </div>
 
-          {/* Score Overview */}
+          {/* Score Overview - Blue gradient style */}
           <div className="relative p-6 rounded-2xl
-            bg-[#14141B]
-            bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+            bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
+            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.4)_inset]">
+            
+            {/* Glass effect overlay */}
+            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+              w-[calc(100%+2px)] h-[calc(100%+2px)] overflow-hidden rounded-2xl
+              bg-gradient-to-b from-white/40 to-white/10 pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                w-[200%] h-40
+                bg-gradient-to-b from-white/50 via-white/20 to-transparent
+                animate-[rotate_8s_linear_infinite]">
+              </div>
+            </div>
+            
             <h3 className="text-xl font-semibold mb-6 text-white">
               <span className="mr-2">📊</span> 
               Score Breakdown
-              <span className="text-sm font-normal text-gray-400 ml-2">Hover over bars for details!</span>
+              <span className="text-sm font-normal text-white/80 ml-2">Hover over bars for details!</span>
             </h3>
             <BarChart
               xAxis={[{ 
                 scaleType: 'band', 
                 data: scoreData.map(item => item.name),
                 tickLabelStyle: {
-                  fill: '#94a3b8',
+                  fill: 'white',
                   fontSize: 12,
                   fontWeight: 500
                 }
               }]}
               series={[{
                 data: scoreData.map(item => item.value),
-                color: '#8b5cf6',
+                color: 'white',
                 valueFormatter: (value: number | null) => 
                   value !== null ? `${(value)}/10` : 'N/A'
               }]}
               height={300}
               margin={{ top: 20, bottom: 40, left: 40, right: 20 }}
               sx={{
-                '& .MuiChartsAxis-line': { stroke: '#334155' },
-                '& .MuiChartsAxis-tick': { stroke: '#334155' },
+                '& .MuiChartsAxis-line': { stroke: 'white' },
+                '& .MuiChartsAxis-tick': { stroke: 'white' },
                 '& .MuiBarElement-root': {
-                  fill: 'url(#gradient)',
+                  fill: 'url(#gradient-bar)',
                   transition: 'all 0.2s ease-in-out',
                   '&:hover': {
                     filter: 'brightness(1.2)',
@@ -186,163 +213,183 @@ export default function Analysis() {
               }}
             >
               <defs>
-                <linearGradient id="gradient" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stopColor="#4338ca" />
-                  <stop offset="50%" stopColor="#8b5cf6" />
-                  <stop offset="100%" stopColor="#c084fc" />
+                <linearGradient id="gradient-bar" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stopColor="white" />
+                  <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
                 </linearGradient>
               </defs>
             </BarChart>
           </div>
 
-          {/* Code Quality Section */}
+          {/* Code Quality Section - Pastel sunset style */}
           <div className="relative p-6 rounded-2xl
-            bg-[#14141B]
-            bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+            bg-gradient-to-br from-[#f9c58d] via-[#f29e7c] to-[#e77c8d]
+            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.3)_inset]">
+            
             <h3 className="text-xl font-semibold mb-6 text-white">🎯 Code Quality Metrics</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left column */}
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">🔧 Maintainability</h4>
-                  <div className="text-3xl font-bold text-blue-600">
+                <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                  <h4 className="font-medium mb-2 text-white">🔧 Maintainability</h4>
+                  <div className="text-3xl font-bold text-white">
                     {evaluation.codeQualityMetrics.maintainabilityIndex}/100
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">Maintainability Index</div>
+                  <div className="text-sm text-white/80 mt-1">Maintainability Index</div>
                 </div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">⚖️ Technical Debt</h4>
-                  <div className="text-3xl font-bold text-orange-500">
+                <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                  <h4 className="font-medium mb-2 text-white">⚖️ Technical Debt</h4>
+                  <div className="text-3xl font-bold text-white">
                     {evaluation.codeQualityMetrics.technicalDebtRatio}%
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">Technical Debt Ratio</div>
+                  <div className="text-sm text-white/80 mt-1">Technical Debt Ratio</div>
                 </div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">🦨 Code Smells</h4>
-                  <div className="text-3xl font-bold text-red-500">
+                <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                  <h4 className="font-medium mb-2 text-white">🦨 Code Smells</h4>
+                  <div className="text-3xl font-bold text-white">
                     {evaluation.codeQualityMetrics.codeSmells}
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">Total Code Smells</div>
+                  <div className="text-sm text-white/80 mt-1">Total Code Smells</div>
                 </div>
               </div>
 
               {/* Right column - Complexity Distribution */}
               <div>
-                <h4 className="font-medium mb-4">🧩 Complexity Distribution</h4>
+                <h4 className="font-medium mb-4 text-white">🧩 Complexity Distribution</h4>
                 <PieChart
                   series={[{
                     data: [
-                      { id: 0, value: evaluation.codeQualityMetrics.complexityDistribution.low, label: 'Low' },
-                      { id: 1, value: evaluation.codeQualityMetrics.complexityDistribution.medium, label: 'Medium' },
-                      { id: 2, value: evaluation.codeQualityMetrics.complexityDistribution.high, label: 'High' },
-                      { id: 3, value: evaluation.codeQualityMetrics.complexityDistribution.veryHigh, label: 'Very High' },
+                      { id: 0, value: evaluation.codeQualityMetrics.complexityDistribution.low, label: 'Low', color: '#fdd692' },
+                      { id: 1, value: evaluation.codeQualityMetrics.complexityDistribution.medium, label: 'Medium', color: '#f8a978' },
+                      { id: 2, value: evaluation.codeQualityMetrics.complexityDistribution.high, label: 'High', color: '#f5817b' },
+                      { id: 3, value: evaluation.codeQualityMetrics.complexityDistribution.veryHigh, label: 'Very High', color: '#e05c7f' },
                     ],
                     highlightScope: { faded: 'global', highlighted: 'item' },
                   }]}
                   height={200}
+                  sx={{
+                    '& .MuiChartsLegend-series': {
+                      fill: 'white',
+                    }
+                  }}
+                  slotProps={{
+                    legend: {
+                      labelStyle: {
+                        fill: 'white',
+                      }
+                    }
+                  }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Security Section */}
+          {/* Security Section - Transparent with backdrop blur */}
           <div className="relative p-6 rounded-2xl
-            bg-[#14141B]
-            bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
-            <h3 className="text-xl font-semibold mb-6 text-white">🔒 Security Analysis</h3>
+            bg-transparent backdrop-blur-md border-2 border-white/30">
+            
+            <h3 className="text-xl font-semibold mb-6 text-[#2a5674]">🔒 Security Analysis</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left column - Vulnerability Chart */}
               <div>
-                <h4 className="font-medium mb-4">⚠️ Vulnerabilities by Severity</h4>
+                <h4 className="font-medium mb-4 text-[#2a5674]">⚠️ Vulnerabilities by Severity</h4>
                 <BarChart
                   xAxis={[{ 
                     scaleType: 'band', 
-                    data: ['Critical', 'High', 'Medium', 'Low']
+                    data: ['Critical', 'High', 'Medium', 'Low'],
+                    tickLabelStyle: {
+                      fill: '#2a5674',
+                      fontSize: 12,
+                      fontWeight: 500
+                    }
                   }]}
                   series={[{
                     data: vulnerabilityData,
                     //@ts-expect-error - MUI X-Charts typing issue with color array
-                    color: ['#dc3545', '#ff4d4d', '#ffa500', '#4caf50']
+                    color: ['#e05c7f', '#f5817b', '#f8a978', '#a8dba8']
                   }]}
                   height={200}
+                  sx={{
+                    '& .MuiChartsAxis-line': { stroke: '#2a5674' },
+                    '& .MuiChartsAxis-tick': { stroke: '#2a5674' },
+                  }}
                 />
               </div>
 
               {/* Right column - Security Metrics */}
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">🎯 Security Hotspots</h4>
-                  <div className="text-3xl font-bold text-yellow-500">
+                <div className="p-4 bg-white/50 rounded-lg">
+                  <h4 className="font-medium mb-2 text-[#2a5674]">🎯 Security Hotspots</h4>
+                  <div className="text-3xl font-bold text-[#e05c7f]">
                     {evaluation.securityMetrics.securityHotspots}
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">Areas Needing Review</div>
+                  <div className="text-sm text-[#2a5674]/80 mt-1">Areas Needing Review</div>
                 </div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">🔑 Authentication Coverage</h4>
-                  <div className="text-3xl font-bold text-green-600">
+                <div className="p-4 bg-white/50 rounded-lg">
+                  <h4 className="font-medium mb-2 text-[#2a5674]">🔑 Authentication Coverage</h4>
+                  <div className="text-3xl font-bold text-[#2a5674]">
                     {evaluation.securityMetrics.authenticationCoverage}%
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">Auth Coverage</div>
+                  <div className="text-sm text-[#2a5674]/80 mt-1">Auth Coverage</div>
                 </div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">🛡️ Secure Code Practices</h4>
+                <div className="p-4 bg-white/50 rounded-lg">
+                  <h4 className="font-medium mb-2 text-[#2a5674]">🛡️ Secure Code Practices</h4>
                   <SparkLineChart
                     data={[evaluation.securityMetrics.secureCodePractices]}
                     height={60}
                     showTooltip
                     showHighlight
+                    colors={['#3B82F6']}
                   />
-                  <div className="text-sm text-gray-500 mt-1">Score: {evaluation.securityMetrics.secureCodePractices}/100</div>
+                  <div className="text-sm text-[#2a5674]/80 mt-1">Score: {evaluation.securityMetrics.secureCodePractices}/100</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Codebase Overview */}
+          {/* Codebase Overview - Gentle green gradient */}
           <div className="relative p-6 rounded-2xl
-            bg-[#14141B]
-            bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+            bg-gradient-to-br from-[#a8dba8] via-[#79bd9a] to-[#3b8686]
+            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.3)_inset]">
+            
             <h3 className="text-xl font-semibold mb-6 text-white">📁 Codebase Overview</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold">{evaluation.metrics.totalFiles}</div>
-                <div className="text-sm text-gray-500">📄 Total Files</div>
+              <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                <div className="text-2xl font-bold text-white">{evaluation.metrics.totalFiles}</div>
+                <div className="text-sm text-white/80">📄 Total Files</div>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold">{evaluation.metrics.totalLines}</div>
-                <div className="text-sm text-gray-500">�� Lines of Code</div>
+              <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                <div className="text-2xl font-bold text-white">{evaluation.metrics.totalLines}</div>
+                <div className="text-sm text-white/80">📝 Lines of Code</div>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold">{evaluation.metrics.commentRatio}%</div>
-                <div className="text-sm text-gray-500">💭 Comment Ratio</div>
+              <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                <div className="text-2xl font-bold text-white">{evaluation.metrics.commentRatio}%</div>
+                <div className="text-sm text-white/80">💭 Comment Ratio</div>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold">{evaluation.metrics.duplication}%</div>
-                <div className="text-sm text-gray-500">🔄 Code Duplication</div>
+              <div className="p-4 bg-white/30 backdrop-blur-sm rounded-lg border border-white/30">
+                <div className="text-2xl font-bold text-white">{evaluation.metrics.duplication}%</div>
+                <div className="text-sm text-white/80">🔄 Code Duplication</div>
               </div>
             </div>
           </div>
 
-          {/* Improvement Tips */}
+          {/* Improvement Tips - Lavender style */}
           <div className="relative p-6 rounded-2xl
-            bg-[#14141B]
-            bg-[radial-gradient(at_88%_40%,hsla(240,15%,9%,1)_0px,transparent_85%),radial-gradient(at_49%_30%,hsla(240,15%,9%,1)_0px,transparent_85%)]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.25)_inset]">
+            bg-gradient-to-br from-[#b19cd9] to-[#6d5dac]
+            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.3)_inset]">
+            
             <h3 className="text-xl font-semibold mb-4 text-white">💡 Pro Tips</h3>
             <ul className="space-y-2">
               {evaluation.improvementTips.map((tip: string, index: number) => (
-                <li key={index} className="flex items-start p-2 bg-blue-50 rounded">
-                  <span className="flex-shrink-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white mr-3">
+                <li key={index} className="flex items-start p-2 bg-white/30 backdrop-blur-sm rounded border border-white/30">
+                  <span className="flex-shrink-0 w-6 h-6 bg-white/30 rounded-full flex items-center justify-center text-white mr-3">
                     {index + 1}
                   </span>
-                  <span className="text-gray-700">{tip}</span>
+                  <span className="text-white">{tip}</span>
                 </li>
               ))}
             </ul>
