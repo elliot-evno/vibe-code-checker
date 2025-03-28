@@ -6,11 +6,19 @@ import { useEvaluation } from '../context/EvaluationContext';
 
 import Files from "./Files";
 
+interface GitHubFile {
+  path: string;
+  name: string;
+  type: "dir" | "file";
+  size?: number;
+  content?: string;
+}
+
 export function Repos() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [repoName, setRepoName] = useState("");
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<GitHubFile[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
@@ -57,7 +65,7 @@ export function Repos() {
     }
   };
 
-  const handleEvaluateCodebase = async (files: any[]) => {
+  const handleEvaluateCodebase = async (files: GitHubFile[]) => {
     setIsAnalyzing(true);
     try {
       // Filter out directories and files without content
@@ -67,10 +75,10 @@ export function Repos() {
 
       // Create a structured format for evaluation
       const codebaseContent = codeFiles.map(file => {
-        // Decode base64 content if needed
-        const content = file.content.startsWith('base64:') 
-          ? Buffer.from(file.content.slice(7), 'base64').toString('utf-8')
-          : file.content;
+        // Since we filtered above, we can safely assert that content exists
+        const content = file.content!.startsWith('base64:') 
+          ? Buffer.from(file.content!.slice(7), 'base64').toString('utf-8')
+          : file.content!;
 
         return `### File: ${file.path}\n` +
                `#### Metadata:\n` +

@@ -4,7 +4,6 @@ import { useEvaluation } from '../context/EvaluationContext';
 import { 
   BarChart, 
   PieChart,
-  LineChart,
   SparkLineChart 
 } from '@mui/x-charts';
 
@@ -261,7 +260,8 @@ export default function Analysis() {
                 }]}
                 series={[{
                   data: vulnerabilityData,
-                  color: ['#dc3545', '#ff4d4d', '#ffa500', '#4caf50'] as any
+                  //@ts-expect-error - MUI X-Charts typing issue with color array
+                  color: ['#dc3545', '#ff4d4d', '#ffa500', '#4caf50']
                 }]}
                 height={200}
               />

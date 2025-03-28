@@ -1,4 +1,4 @@
-import React, { useRef, type FormEvent, useState } from "react";
+import React, { type FormEvent, useState } from "react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
 // Enhanced helper function with debugging
@@ -21,7 +21,6 @@ const ensureString = (input: unknown): string => {
 
 export function APITester() {
   const [markdown, setMarkdown] = useState<string>("");
-  const responseInputRef = useRef<HTMLTextAreaElement>(null);
 
   const testEndpoint = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
