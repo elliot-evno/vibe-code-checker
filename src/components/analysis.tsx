@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEvaluation } from '../context/EvaluationContext';
 import { usePostHog } from './PostHogProvider';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   BarChart, 
   PieChart,
@@ -55,23 +55,22 @@ const keyframes = `
   }
 `;
 
+
+
 export default function Analysis() {
   const router = useRouter();
   const { evaluationData: evaluation } = useEvaluation();
   const { posthog } = usePostHog();
 
   // Track page view with evaluation data when component mounts
-  React.useEffect(() => {
-    if (evaluation) {
-      posthog?.capture('analysis_page_view', {
-        overall_score: evaluation.scores.overallScore,
-        code_quality_score: evaluation.scores.codeQuality,
-        security_score: evaluation.scores.security,
-        total_code_smells: evaluation.codeQualityMetrics.codeSmells,
-        technical_debt_ratio: evaluation.codeQualityMetrics.technicalDebtRatio
+  useEffect(() => {
+    if (posthog && evaluation) {
+      posthog.capture('analysis_page_view', {
+        scores: evaluation.scores,
+        metrics: evaluation.metrics
       });
     }
-  }, [evaluation]);
+  }, [evaluation, posthog]);
 
   const handleBack = () => {
     posthog?.capture('analysis_page_exit', {
@@ -81,7 +80,7 @@ export default function Analysis() {
   };
 
   // Set start time when component mounts
-  React.useEffect(() => {
+  useEffect(() => {
     (window as any).analysisStartTime = Date.now();
   }, []);
 
