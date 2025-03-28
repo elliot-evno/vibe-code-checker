@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useEvaluation } from '../context/EvaluationContext';
+import { usePostHog } from '../components/PostHogProvider';
 
 import Files from "./Files";
 
@@ -24,10 +25,19 @@ export function Repos() {
   const [currentPath, setCurrentPath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { setEvaluationData } = useEvaluation();
+  const { posthog } = usePostHog();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Track repository search attempt
+    posthog?.capture('repository_search', {
+      username,
+      repo_name: repoName,
+      path: currentPath
+    });
+
     try {
       const response = await fetch('/api/github', {
         method: 'POST',
@@ -48,15 +58,39 @@ export function Repos() {
       const contents = await response.json();
       setFiles(contents);
       setError("");
+
+      // Track successful repository fetch
+      posthog?.capture('repository_fetch_success', {
+        username,
+        repo_name: repoName,
+        path: currentPath,
+        files_count: contents.length
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch repository");
       setFiles([]);
+
+      // Track repository fetch error
+      posthog?.capture('repository_fetch_error', {
+        username,
+        repo_name: repoName,
+        path: currentPath,
+        error_message: err instanceof Error ? err.message : "Unknown error"
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleNavigate = (path: string) => {
+    // Track navigation within repository
+    posthog?.capture('repository_navigate', {
+      from_path: currentPath,
+      to_path: path,
+      username,
+      repo_name: repoName
+    });
+
     if (path === "..") {
       const newPath = currentPath.split('/').slice(0, -1).join('/');
       setCurrentPath(newPath);
@@ -67,6 +101,15 @@ export function Repos() {
 
   const handleEvaluateCodebase = async (files: GitHubFile[]) => {
     setIsAnalyzing(true);
+
+    // Track codebase evaluation start
+    posthog?.capture('codebase_evaluation_start', {
+      username,
+      repo_name: repoName,
+      files_count: files.length,
+      total_size: files.reduce((acc, file) => acc + (file.size || 0), 0)
+    });
+
     try {
       // Filter out directories and files without content
       const codeFiles = files.filter(file => 
@@ -126,14 +169,36 @@ export function Repos() {
           setEvaluationData(result.response);
           router.push('/analysis');
         }
+
+        // Track successful evaluation
+        posthog?.capture('codebase_evaluation_success', {
+          username,
+          repo_name: repoName,
+          files_analyzed: files.length
+        });
       } catch (err) {
         console.error('JSON parsing error:', err);
         setError(`Error parsing evaluation data: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setIsAnalyzing(false);
+
+        // Track evaluation error
+        posthog?.capture('codebase_evaluation_error', {
+          username,
+          repo_name: repoName,
+          error_message: err instanceof Error ? err.message : 'Unknown error'
+        });
       }
     } catch (err) {
       console.error('Evaluation error:', err);
       setError(`Error: ${err instanceof Error ? err.message : 'Failed to evaluate codebase'}`);
+      
+      // Track evaluation error
+      posthog?.capture('codebase_evaluation_error', {
+        username,
+        repo_name: repoName,
+        error_message: err instanceof Error ? err.message : 'Unknown error'
+      });
+      
       setIsAnalyzing(false);
     }
   };

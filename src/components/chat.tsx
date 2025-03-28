@@ -1,5 +1,6 @@
 import React, { type FormEvent, useState } from "react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { usePostHog } from "./PostHogProvider";
 
 // Enhanced helper function with debugging
 const ensureString = (input: unknown): string => {
@@ -21,6 +22,7 @@ const ensureString = (input: unknown): string => {
 
 export function APITester() {
   const [markdown, setMarkdown] = useState<string>("");
+  const { posthog } = usePostHog();
 
   const testEndpoint = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,6 +32,11 @@ export function APITester() {
       const formData = new FormData(form);
       const prompt = formData.get("prompt") as string;
       
+      // Track that the user submitted a prompt
+      posthog?.capture('chat_prompt_submitted', {
+        prompt_length: prompt.length,
+      });
+
       const res = await fetch("/api/gemini", {
         method: "POST",
         headers: {
@@ -42,10 +49,21 @@ export function APITester() {
       const processedMarkdown = ensureString(data?.response || data);
       console.log('Processed markdown:', processedMarkdown);
       setMarkdown(processedMarkdown);
+
+      // Track successful response
+      posthog?.capture('chat_response_received', {
+        response_length: processedMarkdown.length,
+        success: true,
+      });
     } catch (error) {
       const errorMessage = ensureString(`**Error:** ${error instanceof Error ? error.message : 'An unknown error occurred'}`);
       console.error('Error occurred:', errorMessage);
       setMarkdown(errorMessage);
+
+      // Track error
+      posthog?.capture('chat_error', {
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 

@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEvaluation } from '../context/EvaluationContext';
+import { usePostHog } from './PostHogProvider';
+import React from 'react';
 import { 
   BarChart, 
   PieChart,
@@ -56,12 +58,37 @@ const keyframes = `
 export default function Analysis() {
   const router = useRouter();
   const { evaluationData: evaluation } = useEvaluation();
+  const { posthog } = usePostHog();
+
+  // Track page view with evaluation data when component mounts
+  React.useEffect(() => {
+    if (evaluation) {
+      posthog?.capture('analysis_page_view', {
+        overall_score: evaluation.scores.overallScore,
+        code_quality_score: evaluation.scores.codeQuality,
+        security_score: evaluation.scores.security,
+        total_code_smells: evaluation.codeQualityMetrics.codeSmells,
+        technical_debt_ratio: evaluation.codeQualityMetrics.technicalDebtRatio
+      });
+    }
+  }, [evaluation]);
 
   const handleBack = () => {
+    posthog?.capture('analysis_page_exit', {
+      time_spent: Date.now() - (window as any).analysisStartTime
+    });
     router.back();
   };
 
+  // Set start time when component mounts
+  React.useEffect(() => {
+    (window as any).analysisStartTime = Date.now();
+  }, []);
+
   if (!evaluation) {
+    posthog?.capture('analysis_page_error', {
+      error: 'No evaluation data available'
+    });
     return (
       <div className="container max-w-6xl mx-auto p-6">
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-6 py-4 rounded-lg">
@@ -77,6 +104,14 @@ export default function Analysis() {
       </div>
     );
   }
+
+  // Track chart interactions
+  const handleChartInteraction = (chartType: string, data: any) => {
+    posthog?.capture('analysis_chart_interaction', {
+      chart_type: chartType,
+      data_point: data
+    });
+  };
 
   // Prepare data for charts
   const scoreData = [
@@ -143,8 +178,7 @@ export default function Analysis() {
 
           {/* Score Overview - Blue gradient style */}
           <div className="relative p-6 rounded-2xl
-            bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
-            shadow-[0px_-16px_24px_0px_rgba(255,255,255,0.4)_inset]">
+            bg-transparent backdrop-blur-md border-2 border-white/30">
             
             {/* Glass effect overlay */}
             <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
@@ -167,14 +201,14 @@ export default function Analysis() {
                 scaleType: 'band', 
                 data: scoreData.map(item => item.name),
                 tickLabelStyle: {
-                  fill: 'white',
-                  fontSize: 12,
-                  fontWeight: 500
+                  fill: 'url(#gradient-text)',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  fontFamily: 'sans-serif'
                 }
               }]}
               series={[{
                 data: scoreData.map(item => item.value),
-                color: 'white',
                 valueFormatter: (value: number | null) => 
                   value !== null ? `${(value)}/10` : 'N/A'
               }]}
@@ -193,7 +227,11 @@ export default function Analysis() {
                   }
                 },
                 '& .MuiChartsAxis-tickLabel': {
-                  transform: 'rotate(-45deg) translateX(-20px)',
+                  transform: 'none',
+                  textAnchor: 'end',
+                },
+                '& .MuiChartsSurface-root': {
+                  backgroundColor: 'transparent',
                 }
               }}
               slotProps={{
@@ -201,11 +239,16 @@ export default function Analysis() {
                   hidden: true
                 }
               }}
+              onItemClick={(event: any, data: any) => handleChartInteraction('score_breakdown', data)}
             >
               <defs>
                 <linearGradient id="gradient-bar" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stopColor="white" />
-                  <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
+                  <stop offset="0%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="#60A5FA" />
+                </linearGradient>
+                <linearGradient id="gradient-text" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stopColor="#3B82F6" />
+                  <stop offset="100%" stopColor="#60A5FA" />
                 </linearGradient>
               </defs>
             </BarChart>
