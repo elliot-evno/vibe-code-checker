@@ -5,6 +5,7 @@ import { usePostHog } from './PostHogProvider';
 import React, { useEffect } from 'react';
 import { 
   BarChart, 
+  BarItemIdentifier, 
   PieChart,
   SparkLineChart 
 } from '@mui/x-charts';
@@ -74,14 +75,14 @@ export default function Analysis() {
 
   const handleBack = () => {
     posthog?.capture('analysis_page_exit', {
-      time_spent: Date.now() - (window as any).analysisStartTime
+      time_spent: Date.now() - (window as unknown as Window & { analysisStartTime: number }).analysisStartTime
     });
     router.back();
   };
 
   // Set start time when component mounts
   useEffect(() => {
-    (window as any).analysisStartTime = Date.now();
+    (window as unknown as Window & { analysisStartTime: number }).analysisStartTime = Date.now();
   }, []);
 
   if (!evaluation) {
@@ -105,7 +106,7 @@ export default function Analysis() {
   }
 
   // Track chart interactions
-  const handleChartInteraction = (chartType: string, data: any) => {
+  const handleChartInteraction = (chartType: string, data: BarItemIdentifier) => {
     posthog?.capture('analysis_chart_interaction', {
       chart_type: chartType,
       data_point: data
@@ -238,7 +239,8 @@ export default function Analysis() {
                   hidden: true
                 }
               }}
-              onItemClick={(event: any, data: any) => handleChartInteraction('score_breakdown', data)}
+              onItemClick={(event: React.MouseEvent, data: BarItemIdentifier) => 
+                handleChartInteraction('score_breakdown', data)}
             >
               <defs>
                 <linearGradient id="gradient-bar" x1="0" y1="1" x2="0" y2="0">
