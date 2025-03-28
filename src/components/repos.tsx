@@ -204,17 +204,17 @@ export function Repos() {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto p-4 relative z-10">
-      <div className="mx-8 p-8 rounded-lg">
-        <h1 className="text-6xl font-bold mb-14 text-center 
+    <div className="container mx-auto p-4 relative z-10">
+      <div className="mx-auto sm:mx-8 p-4 sm:p-8 rounded-lg">
+        <h1 className="text-4xl sm:text-6xl font-bold mb-8 sm:mb-14 text-center 
           text-white">
           Vibe Code Checker
         </h1>
-        <form onSubmit={handleSubmit} className="pb-8 mb-4 flex flex-col items-center">
-          <div className="flex flex-col gap-8 mb-6">
-            <div className="flex flex-col gap-7 relative text-white">
+        <form onSubmit={handleSubmit} className="pb-4 sm:pb-8 mb-4 flex flex-col items-center">
+          <div className="flex flex-col gap-6 sm:gap-8 mb-6 w-full max-w-[550px]">
+            <div className="flex flex-col gap-7 relative text-white w-full">
               <input
-                className="peer w-[550px] h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
+                className="peer w-full h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
                 bg-gradient-to-b from-white/90 to-white/70
                 text-transparent bg-clip-text font-medium
                 shadow-[0px_5px_15px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.9)]
@@ -233,9 +233,9 @@ export function Repos() {
               </label>
             </div>
 
-            <div className="flex flex-col gap-7 relative text-white">
+            <div className="flex flex-col gap-7 relative text-white w-full">
               <input
-                className="peer w-[550px] h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
+                className="peer w-full h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
                 bg-gradient-to-b from-white/90 to-white/70
                 text-transparent bg-clip-text font-medium
                 shadow-[0px_5px_15px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.9)]
@@ -257,7 +257,7 @@ export function Repos() {
           
           <div className="flex items-center justify-center w-full">
             <button
-              className="h-16 px-10 rounded-xl flex items-center justify-center 
+              className="h-12 sm:h-16 px-6 sm:px-10 rounded-xl flex items-center justify-center 
               bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
               shadow-[0px_10px_20px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.5)] 
               transition-all hover:scale-105 
@@ -267,7 +267,7 @@ export function Repos() {
               disabled={isLoading}
               style={{ cursor: 'pointer' }}
             >
-              <span className="text-white text-lg font-semibold transition-all active:scale-95 tracking-wide">
+              <span className="text-white text-base sm:text-lg font-semibold transition-all active:scale-95 tracking-wide">
                 {isLoading ? 'Loading...' : 'Browse Repository'}
               </span>
             </button>
