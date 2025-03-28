@@ -132,12 +132,9 @@ export function Repos() {
 
   return (
     <div className="container max-w-4xl mx-auto p-4 relative z-10">
-      <div className="mx-8 p-8 rounded-lg bg-black backdrop-blur-sm shadow-lg">
+      <div className="mx-8 p-8 rounded-lg">
         <h1 className="text-6xl font-bold mb-14 text-center 
-          bg-gradient-to-b from-[#E5E5E5] via-[#E5E5E5] via-[29%] to-[#737373]
-          bg-clip-text text-transparent
-          animate-gradient bg-300% transition-all duration-300
-          hover:scale-105 cursor-default">
+          text-white">
           Vibe Code Checker
         </h1>
         <form onSubmit={handleSubmit} className="pb-8 mb-4 flex flex-col items-center">
