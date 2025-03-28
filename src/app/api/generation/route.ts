@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import env from "@/env/environment";
 import { systemPrompt } from "./system-prompt";
+import { PostHog } from 'posthog-node';
+
+// Initialize PostHog
+const posthog = new PostHog(env.POSTHOG_API_KEY as string, {
+  host: env.POSTHOG_HOST
+});
 
 const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY as string);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: systemPrompt });
@@ -9,12 +15,13 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstru
 export async function POST(req: Request) {
   try {
     const { codebase } = await req.json();
-    
-    console.log('Received codebase for evaluation:', codebase.slice(0, 100) + '...');
+    console.log(systemPrompt);
     
     const evaluationPrompt = `Evaluate the following codebase and return ONLY a JSON object with no additional text or markdown formatting:\n\n${codebase}\n\nYour response must be a valid JSON object matching the specified format with no additional text, comments, or markdown.`;
     
-    console.log('Attempting to generate content with Gemini...');
+    
+    // Start tracking the generation
+    const startTime = Date.now();
     
     const result = await model.generateContent({
       contents: [
@@ -26,7 +33,23 @@ export async function POST(req: Request) {
     });
 
     const response = result.response.text();
-    console.log('Raw response:', response);
+    const endTime = Date.now();
+    
+
+    // Capture the generation event
+    posthog.capture({
+      distinctId: 'generation_endpoint',
+      event: '$ai_generation',
+      properties: {
+        $ai_model: 'gemini-2.0-flash',
+        $ai_provider: 'google',
+        $ai_input: evaluationPrompt,
+        $ai_output_choices: [response],
+        $ai_latency: (endTime - startTime) / 1000,
+        $ai_http_status: 200,
+        $ai_base_url: 'https://generativelanguage.googleapis.com'
+      }
+    });
 
     // Try to extract JSON from the response
     let cleanResponse = response;
@@ -47,7 +70,6 @@ export async function POST(req: Request) {
     // Validate that it's parseable JSON
     try {
       const parsedJson = JSON.parse(jsonMatch[0]);
-      console.log('Successfully parsed JSON response');
       return NextResponse.json({ response: parsedJson });
     } catch (parseError) {
       console.error('JSON parsing failed:', parseError);
