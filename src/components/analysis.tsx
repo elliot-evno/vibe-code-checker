@@ -10,10 +10,10 @@ import {
 const StatCard = ({ value, label }: { value: string | number, label: string }) => {
   return (
     <div className="relative w-[280px] h-[220px] rounded-xl p-[1px] overflow-hidden
-                    bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6] shadow-lg">
+                    bg-transparent backdrop-blur-md border-2 border-white/30 shadow-lg">
       {/* Main card */}
-      <div className="relative w-full h-full rounded-xl border border-white/30 
-        bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
+      <div className="relative w-full h-full rounded-xl 
+        bg-white/80 backdrop-blur-sm
         flex flex-col items-center justify-center">
         
         {/* Grid lines */}
@@ -23,27 +23,17 @@ const StatCard = ({ value, label }: { value: string | number, label: string }) =
         <div className="absolute right-[10%] w-[1px] h-full bg-white/30" />
         
         {/* Content */}
-        <span className="relative z-[3] text-5xl font-bold text-white
-          drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
+        <span className="relative z-[3] text-5xl font-bold text-black drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
           {value}
         </span>
-        <span className="relative z-[3] text-white mt-3 text-lg font-medium">{label}</span>
+        <span className="relative z-[3] text-black mt-3 text-lg font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
+          {label}
+        </span>
       </div>
 
       {/* Animated dot */}
       <div className="absolute w-[5px] h-[5px] bg-white rounded-full shadow-[0_0_10px_#ffffff] z-[4]
         animate-[moveDot_6s_linear_infinite]" />
-        
-      {/* Glass effect overlay */}
-      <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-        w-[calc(100%+2px)] h-[calc(100%+2px)] overflow-hidden rounded-xl
-        bg-gradient-to-b from-white/40 to-white/10 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[200%] h-40
-          bg-gradient-to-b from-white/50 via-white/20 to-transparent
-          animate-[rotate_8s_linear_infinite]">
-        </div>
-      </div>
     </div>
   );
 };
