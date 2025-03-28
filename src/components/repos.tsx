@@ -141,40 +141,42 @@ export function Repos() {
           <div className="flex flex-col gap-8 mb-6">
             <div className="flex flex-col gap-7 relative text-white">
               <input
-                className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
-                bg-black/30 backdrop-blur-sm
-                shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
-                focus:border-2 focus:border-transparent
-                focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
-                valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+                className="peer w-[550px] h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
+                bg-gradient-to-b from-white/90 to-white/70
+                text-transparent bg-clip-text font-medium
+                shadow-[0px_5px_15px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                focus:shadow-[0px_5px_20px_rgba(59,130,246,0.3),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                valid:shadow-[0px_5px_20px_rgba(59,130,246,0.3),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                transition-all duration-300 ease-in-out"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
-                peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
-                peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+              <label className="text-[17px] pl-[12px] absolute top-[16px] transition-all duration-300 pointer-events-none
+                peer-focus:-translate-y-[38px] peer-focus:pl-[2px] peer-focus:text-[#3168C5]
+                peer-valid:-translate-y-[38px] peer-valid:pl-[2px] peer-valid:text-[#3168C5]">
                 Username
               </label>
             </div>
 
             <div className="flex flex-col gap-7 relative text-white">
               <input
-                className="peer w-[500px] h-[45px] border-none outline-none px-[7px] rounded-md text-white text-[15px] 
-                bg-black/30 backdrop-blur-sm
-                shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4)]
-                focus:border-2 focus:border-transparent
-                focus:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]
-                valid:shadow-[3px_3px_10px_rgba(0,0,0,1),-1px_-1px_6px_rgba(255,255,255,0.4),inset_3px_3px_10px_rgba(0,0,0,1),inset_-1px_-1px_6px_rgba(255,255,255,0.4)]"
+                className="peer w-[550px] h-[55px] border-none outline-none px-[12px] rounded-xl text-[16px] 
+                bg-gradient-to-b from-white/90 to-white/70
+                text-transparent bg-clip-text font-medium
+                shadow-[0px_5px_15px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                focus:shadow-[0px_5px_20px_rgba(59,130,246,0.3),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                valid:shadow-[0px_5px_20px_rgba(59,130,246,0.3),inset_2px_2px_4px_rgba(255,255,255,0.9)]
+                transition-all duration-300 ease-in-out"
                 type="text"
                 value={repoName}
                 onChange={(e) => setRepoName(e.target.value)}
                 required
               />
-              <label className="text-[15px] pl-[10px] absolute top-[13px] transition-all duration-300 pointer-events-none
-                peer-focus:-translate-y-[35px] peer-focus:pl-[2px]
-                peer-valid:-translate-y-[35px] peer-valid:pl-[2px]">
+              <label className="text-[17px] pl-[12px] absolute top-[16px] transition-all duration-300 pointer-events-none
+                peer-focus:-translate-y-[38px] peer-focus:pl-[2px] peer-focus:text-[#3168C5]
+                peer-valid:-translate-y-[38px] peer-valid:pl-[2px] peer-valid:text-[#3168C5]">
                 Repo Name
               </label>
             </div>
@@ -182,18 +184,17 @@ export function Repos() {
           
           <div className="flex items-center justify-center w-full">
             <button
-              className="h-14 px-10 rounded-lg flex items-center justify-center 
-              bg-gradient-to-r from-[#4F46E5] via-[#3B82F6] to-[#06B6D4]
-              shadow-[4px_4px_6px_rgba(0,0,0,0.2),inset_1px_1px_1px_rgba(255,255,255,0.3)] 
+              className="h-16 px-10 rounded-xl flex items-center justify-center 
+              bg-gradient-to-b from-[#95C5F8] via-[#6AA9ED] to-[#3B82F6]
+              shadow-[0px_10px_20px_rgba(0,0,0,0.15),inset_2px_2px_4px_rgba(255,255,255,0.5)] 
               transition-all hover:scale-105 
-              hover:from-[#4338CA] hover:via-[#2563EB] hover:to-[#0891B2]
-              active:shadow-[0px_0px_0px_rgba(0,0,0,0.2),inset_0.5px_0.5px_2px_#000000] 
+              active:shadow-[0px_5px_10px_rgba(0,0,0,0.1),inset_1px_1px_3px_rgba(0,0,0,0.2)] 
               disabled:opacity-50 disabled:hover:scale-100"
               type="submit"
               disabled={isLoading}
               style={{ cursor: 'pointer' }}
             >
-              <span className="text-white text-lg font-semibold transition-all active:scale-95">
+              <span className="text-white text-lg font-semibold transition-all active:scale-95 tracking-wide">
                 {isLoading ? 'Loading...' : 'Browse Repository'}
               </span>
             </button>
