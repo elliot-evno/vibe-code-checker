@@ -180,17 +180,6 @@ export default function Analysis() {
           <div className="relative p-6 rounded-2xl
             bg-transparent backdrop-blur-md border-2 border-white/30">
             
-            {/* Glass effect overlay */}
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-              w-[calc(100%+2px)] h-[calc(100%+2px)] overflow-hidden rounded-2xl
-              bg-gradient-to-b from-white/40 to-white/10 pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                w-[200%] h-40
-                bg-gradient-to-b from-white/50 via-white/20 to-transparent
-                animate-[rotate_8s_linear_infinite]">
-              </div>
-            </div>
-            
             <h3 className="text-xl font-semibold mb-6 text-white">
               <span className="mr-2">📊</span> 
               Score Breakdown
